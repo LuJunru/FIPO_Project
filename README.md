@@ -9,8 +9,7 @@ The initial models we used are [Tulu2 models](https://huggingface.co/collections
 
 | Name | Share Link |
 | --- | --- |
-| IPL-IPO-70B-Full | TBD |
-| IPL-IPO-70B-Lora | TBD |
+| IPL-IPO-70B-Full | https://huggingface.co/Junrulu/FIPO-IPL-IPO-Tulu2-70B |
 
 ## Workflow
 ### Dataset Diversification
