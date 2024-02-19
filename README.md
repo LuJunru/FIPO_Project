@@ -1,5 +1,5 @@
 # FIPO
-FIPO: Free-form Instruction-oriented Prompt Optimization with Preference Dataset and Modular Fine-tuning Schema
+Free-form Instruction-oriented Prompt Optimization with Preference Dataset and Modular Fine-tuning Schema
 
 ## Environment
 We provide [core_requirement.txt](core_requirement.txt) for your convenience.
