@@ -19,14 +19,15 @@ Run `python3 codes/generate_new_data.py`.
 
 ### FIPO fine-tuning
 ```
-Run `bash scripts/sft_train.sh TYPE` for fine-tuning with SFT strategy. TYPE can be 1 or 0, and 1 is for full fine-tuning and 0 is for lora fine-tuning.
-Run `bash scripts/dpo_train.sh TYPE METHOD` for fine-tuning with DPO/IPO strategy. METHOD can be `sigmoid` or `ipo`, in which `sigmoid` is for DPO and `ipo` is for IPO.
-Run `bash scripts/ipl_train.sh TYPE METHOD` for fine-tuning with IPL strategy.
+Set your local `ROOTPATH` of this project
+Run `bash scripts/sft_train.sh TYPE ROOTPATH` for fine-tuning with SFT strategy. TYPE can be 1 or 0, and 1 is for full fine-tuning and 0 is for lora fine-tuning.
+Run `bash scripts/dpo_train.sh TYPE METHOD ROOTPATH` for fine-tuning with DPO/IPO strategy. METHOD can be `sigmoid` or `ipo`, in which `sigmoid` is for DPO and `ipo` is for IPO.
+Run `bash scripts/ipl_train.sh TYPE METHOD ROOTPATH` for fine-tuning with IPL strategy.
 ```
 
 ### FIPO evaluation
 ```
-Run `bash scripts/test_inference.sh` for evaluation.
+Run `bash scripts/test_inference.sh ROOTPATH` for evaluation.
 ```
 
 ## Acknowledgement
@@ -34,5 +35,12 @@ We thank [AI2](https://allenai.org) for providing the Tulu2 models, [TRL](https:
 
 ## Citation
 ```
-TBD
+@misc{lu2024fipo,
+      title={FIPO: Free-form Instruction-oriented Prompt Optimization with Preference Dataset and Modular Fine-tuning Schema}, 
+      author={Junru Lu and Siyu An and Min Zhang and Yulan He and Di Yin and Xing Sun},
+      year={2024},
+      eprint={2402.11811},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
 ```
