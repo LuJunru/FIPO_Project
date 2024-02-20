@@ -5,15 +5,16 @@ MAXLEN=2048
 EPOCH=3
 ISLORA=$1  # 1 for lora, 0 for full
 SETTING=$2  # ipo or sigmoid
+ROOTPATH=$3
 BETA=0.01
 
 models=("70b")
 
 for model in "${models[@]}"
     do
-    raw_model_path=YOURMODELPATH/tulu2-dpo-${model}/
-    train_data_path=data/ipl_train_data_3W.jsonl
-    deepspeed_config_path=data/ds_config.json
+    raw_model_path=${ROOTPATH}/model/tulu2-dpo-${model}/
+    train_data_path=${ROOTPATH}/data/ipl_train_data_3W.jsonl
+    deepspeed_config_path=${ROOTPATH}/data/ds_config.json
     
     # tuning
     for ((i=1; i<=${EPOCH}; i++))
@@ -26,22 +27,22 @@ for model in "${models[@]}"
         else
             if  [ $ISLORA -ne 0 ]
             then
-                train_newdata_path=YOUROUTPUTPATH/ipl-${SETTING}_train_data_3W_$(($i-1))_${model}-lora.jsonl
-                train_model_path=/YOUROUTPUTPATH/tulu2-${model}-ipl-${SETTING}-3W-$(($i-1))-lora/
+                train_newdata_path=${ROOTPATH}/output/ipl-${SETTING}_train_data_3W_$(($i-1))_${model}-lora.jsonl
+                train_model_path=${ROOTPATH}/output/tulu2-${model}-ipl-${SETTING}-3W-$(($i-1))-lora/
             else
-                train_newdata_path=YOUROUTPUTPATH/ipl-${SETTING}_train_data_3W_$(($i-1))_${model}-full.jsonl
-                train_model_path=/YOUROUTPUTPATH/tulu2-${model}-ipl-${SETTING}-3W-$(($i-1))-full/
+                train_newdata_path=${ROOTPATH}/output/ipl-${SETTING}_train_data_3W_$(($i-1))_${model}-full.jsonl
+                train_model_path=${ROOTPATH}/output/tulu2-${model}-ipl-${SETTING}-3W-$(($i-1))-full/
             fi
         fi
 
         if  [ $ISLORA -ne 0 ]
         then
-            answer_file_path=YOUROUTPUTPATH/ipl-${SETTING}_train_data_3W_${i}_${model}-lora.jsonl
-            model_output_path=YOUROUTPUTPATH/${model}_ipl-${SETTING}_peft_${i}/
-            final_model_output_path=/YOUROUTPUTPATH/tulu2-${model}-ipl-${SETTING}-3W-${i}-lora/
+            answer_file_path=${ROOTPATH}/output/ipl-${SETTING}_train_data_3W_${i}_${model}-lora.jsonl
+            model_output_path=${ROOTPATH}/output/${model}_ipl-${SETTING}_peft_${i}/
+            final_model_output_path=${ROOTPATH}/output/tulu2-${model}-ipl-${SETTING}-3W-${i}-lora/
         else
-            answer_file_path=YOUROUTPUTPATH/ipl-${SETTING}_train_data_3W_${i}_${model}-full.jsonl
-            model_output_path=/YOUROUTPUTPATH/tulu2-${model}-ipl-${SETTING}-3W-${i}-full/
+            answer_file_path=${ROOTPATH}/output/ipl-${SETTING}_train_data_3W_${i}_${model}-full.jsonl
+            model_output_path=${ROOTPATH}/output/tulu2-${model}-ipl-${SETTING}-3W-${i}-full/
             final_model_output_path=${model_output_path}
         fi
 
@@ -62,7 +63,7 @@ for model in "${models[@]}"
             --nproc_per_node $GPU_NUM_PER_NODE \
             --master_addr $MASTER_ADDR \
             --master_port $MASTER_PORT \
-            codes/train_dpo.py \
+            ${ROOTPATH}/codes/train_dpo.py \
             --model_name_or_path ${train_model_path} \
             --bf16 True \
             --output_dir ${model_output_path} \
@@ -95,7 +96,7 @@ for model in "${models[@]}"
         # merge lora and base model
         if  [ $ISLORA -ne 0 ]
         then
-            python3 codes/merge_peft_adapter.py \
+            python3 ${ROOTPATH}/codes/merge_peft_adapter.py \
                 --adapter_model_name ${model_output_path} \
                 --base_model_name ${train_model_path} \
                 --output_name ${final_model_output_path}
@@ -104,7 +105,7 @@ for model in "${models[@]}"
         # new inference
         if [ $i -ne ${EPOCH} ]
         then
-            python3 codes/get_model_infer_batch_ipl.py \
+            python3 ${ROOTPATH}/codes/get_model_infer_batch_ipl.py \
                 --model-path ${final_model_output_path} \
                 --question-file ${train_newdata_path} \
                 --answer-file ${answer_file_path} \
