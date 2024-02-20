@@ -5,22 +5,23 @@ MAXLEN=2048
 EPOCH=3
 ISLORA=$1  # 1 for lora, 0 for full
 SETTING=$2  # ipo or sigmoid
+ROOTPATH=$3
 BETA=0.01
 
 models=("70b")
 
 for model in "${models[@]}"
     do
-    raw_model_path=YOURMODELPATH/tulu2-dpo-${model}/
-    train_data_path=data/dpo_train_data_3W.jsonl
-    deepspeed_config_path=data/ds_config.json
+    raw_model_path=${ROOTPATH}/model/tulu2-dpo-${model}/
+    train_data_path=${ROOTPATH}/data/dpo_train_data_3W.jsonl
+    deepspeed_config_path=${ROOTPATH}/data/ds_config.json
 
     if [ $ISLORA -ne 0 ]
     then
-        model_output_path=YOUROUTPUTPATH/${model}_${SETTING}_peft/
-        final_model_output_path=YOUROUTPUTPATH/tulu2-${model}-${SETTING}-3W-lora/
+        model_output_path=${ROOTPATH}/output/${model}_${SETTING}_peft/
+        final_model_output_path=${ROOTPATH}/output/tulu2-${model}-${SETTING}-3W-lora/
     else
-        model_output_path=YOUROUTPUTPATH/tulu2-${model}-${SETTING}-3W-full/
+        model_output_path=${ROOTPATH}/output/tulu2-${model}-${SETTING}-3W-full/
     fi
 
     case ${model} in
@@ -40,7 +41,7 @@ for model in "${models[@]}"
         --nproc_per_node $GPU_NUM_PER_NODE \
         --master_addr $MASTER_ADDR \
         --master_port $MASTER_PORT \
-        codes/train_dpo.py \
+        ${ROOTPATH}/codes/train_dpo.py \
         --model_name_or_path ${raw_model_path} \
         --bf16 True \
         --output_dir ${model_output_path} \
@@ -73,7 +74,7 @@ for model in "${models[@]}"
     if  [ $ISLORA -ne 0 ]
     then
         # merge lora and base model
-        python3 codes/merge_peft_adapter.py \
+        python3 ${ROOTPATH}/codes/merge_peft_adapter.py \
             --adapter_model_name ${model_output_path} \
             --base_model_name ${raw_model_path} \
             --output_name ${final_model_output_path}
