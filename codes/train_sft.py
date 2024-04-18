@@ -128,8 +128,7 @@ def main():
 
     # Setup seed
     set_seed(training_args.seed)
-    embedding_size = model.get_input_embeddings().weight.shape[0]
-    if len(tokenizer) > embedding_size:
+    if len(tokenizer) > tokenizer.vocab_size:
         model.resize_token_embeddings(len(tokenizer))
 
     # load dataset
