@@ -1,5 +1,7 @@
 # FIPO
-Free-form Instruction-oriented Prompt Optimization with Preference Dataset and Modular Fine-tuning Schema
+Codes and data for FIPO: [Free-form Instruction-oriented Prompt Optimization with Preference Dataset and Modular Fine-tuning Schema](https://arxiv.org/abs/2402.11811). Some former Automatic Prompt Optimization (APO) methods are designed to optimize naive prompts according to task outputs of given in-box testing models, with the help of advanced LLMs (e.g., GPT-4) in an ad-hoc way. Although effective, existing schemes suffer from poor generalization ability and privacy risk. To this end, we collect the first [large-scale Prompt Optimization Preference data](./data), fine-tune offline local LLM-based optimizers, then fairly test with various downstream models. In specific, FIPO uses a [modular template](./data/prompts.json#L2-L4) that dynamically integrate the naive task instruction, optional instruction responses, and optional ground truth to produce finely optimized prompts.
+
+![](./introduction.png)
 
 ## Environment
 We provide [core_requirement.txt](core_requirement.txt) for your convenience.
